@@ -84,7 +84,7 @@ def paginate_modules(
     #            (EqInlineKeyboardButton("<<<", callback_data="{}_prev({})".format(prefix, modulo_page)),
     # EqInlineKeyboardButton(">>>", callback_data="{}_next({})".format(prefix,
     # modulo_page)))]
-    pairs += [[EqInlineKeyboardButton("Back", callback_data="start")]]
+    pairs += [[EqInlineKeyboardButton("Back", callback_data="bot_start")]]
     return pairs
 
 

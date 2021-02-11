@@ -119,10 +119,7 @@ if ENV:
     TIME_API_KEY = os.environ.get("TIME_API_KEY", None)
     IBM_WATSON_CRED_URL = os.environ.get("IBM_WATSON_CRED_URL", None)
     IBM_WATSON_CRED_PASSWORD = os.environ.get("IBM_WATSON_CRED_PASSWORD", None)
-    AI_API_KEY = os.environ.get('AI_API_KEY', None)
-    SUPPORT_CHAT = os.environ.get('SUPPORT_CHAT', None)
-
-
+   
 else:
     from Elizabeth.config import Development as Config
 
@@ -190,8 +187,7 @@ else:
     TELETHON_ID = Config.TELETHON_ID
     SPAMWATCH = Config.SPAMWATCH_API
     LASTFM_API_KEY = Config.LASTFM_API_KEY
-    AI_API_KEY = Config.AI_API_KEY
-    SUPPORT_CHAT = Config.SUPPORT_CHAT
+    
 
 DEV_USERS.add(OWNER_ID)
 

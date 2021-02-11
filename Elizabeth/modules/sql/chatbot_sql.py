@@ -2,7 +2,7 @@ import threading
 
 from sqlalchemy import Column, String
 
-from Alexia.modules.sql import BASE, SESSION
+from Elizabeth.modules.sql import BASE, SESSION
 
 
 class ChatbotChats(BASE):

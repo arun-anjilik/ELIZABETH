@@ -11,11 +11,11 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, run_async
 from telegram.error import BadRequest, Unauthorized, RetryAfter
 from telegram.utils.helpers import mention_html
 
-from Alexia import dispatcher, AI_API_KEY, OWNER_ID, SUPPORT_CHAT
-import Alexia.modules.sql.chatbot_sql as sql
-from Alexia.modules.log_channel import gloggable
-from Alexia.modules.helper_funcs.filters import CustomFilters
-from Alexia.modules.helper_funcs.chat_status import user_admin
+from Elizabeth import dispatcher, AI_API_KEY, OWNER_ID, SUPPORT_CHAT
+import Elizabeth.modules.sql.chatbot_sql as sql
+from Elizabeth.modules.log_channel import gloggable
+from Elizabeth.modules.helper_funcs.filters import CustomFilters
+from Elizabeth.modules.helper_funcs.chat_status import user_admin
 
 CoffeeHouseAPI = API(AI_API_KEY)
 api_client = LydiaAI(CoffeeHouseAPI)

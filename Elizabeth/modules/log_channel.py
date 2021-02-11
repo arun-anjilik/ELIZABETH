@@ -42,31 +42,7 @@ if is_module_loaded(FILENAME):
 
         return log_action
     
-    def gloggable(func):
-        @wraps(func)
-        def glog_action(bot: Bot, update: Update, *args, **kwargs):
-
-            result = func(bot, update, *args, **kwargs)
-            chat = update.effective_chat
-            message = update.effective_message
-
-            if result:
-                datetime_fmt = "%H:%M - %d-%m-%Y"
-                result += "\n<b>Event Stamp</b>: <code>{}</code>".format(datetime.utcnow().strftime(datetime_fmt))
-
-                if message.chat.type == chat.SUPERGROUP and message.chat.username:
-                    result += f'\n<b>Link:</b> <a href="https://t.me/{chat.username}/{message.message_id}">click here</a>'
-                log_chat = str(GBAN_LOGS)
-                if log_chat:
-                    send_log(bot, log_chat, chat.id, result)
-            elif result == "" or not result:
-                pass
-            else:
-                LOGGER.warning("%s was set as loggable to gbanlogs, but had no return statement.", func)
-
-            return result
-
-        return glog_action
+    
 
     def send_log(bot: Bot, log_chat_id: str, orig_chat_id: str, result: str):
         try:

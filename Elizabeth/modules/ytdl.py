@@ -42,12 +42,12 @@ except:
 async def download_video(v_url):
 	url = v_url.pattern_match.group(1)
     	if not url:
-        	rmsg = await v_url.get_reply_message()
-        	myString = rmsg.text
-        	url = re.search("(?P<url>https?://[^\s]+)", myString).group("url")
+            rmsg = await v_url.get_reply_message()
+            myString = rmsg.text
+            url = re.search("(?P<url>https?://[^\s]+)", myString).group("url")
     	if not url:
-        	await edit_or_reply(v_url, "What I am Supposed to find? Give link")
-        	return
+            await edit_or_reply(v_url, "What I am Supposed to find? Give link")
+            return
 	v_url = await edit_or_reply(v_url, "`Preparing to download...`")
     	reply_to_id = await reply_id(v_url)
 	opts = {
@@ -103,27 +103,27 @@ async def download_video(v_url):
         	await v_url.edit(f"{str(type(e)): {str(e)}}")
         	return
 	if song:
-        await v_url.edit(f"`Preparing to upload song:`\\n**{ytdl_data['title']}**\\nby *Alexia*")
-        await v_url.client.send_file(
-            v_url.chat_id,
-            f"{ytdl_data['id']}.mp3",
-            supports_streaming=True,
-            thumb=None,
-            reply_to=reply_to_id,
-            attributes=[
-                DocumentAttributeAudio(
-                    duration=int(ytdl_data["duration"]),
-                    title=str(ytdl_data["title"]),
-                    performer=str(ytdl_data["uploader"]),
-                )
-            ],
-            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                progress(
-                    d, t, v_url, c_time, "Uploading..", f"{ytdl_data['title']}.mp3"
-                )
-            ),
-        )
-        os.remove(f"{ytdl_data['id']}.mp3")
+            await v_url.edit(f"`Preparing to upload song:`\\n**{ytdl_data['title']}**\\nby *Alexia*")
+            await v_url.client.send_file(
+                v_url.chat_id,
+                f"{ytdl_data['id']}.mp3",
+                supports_streaming=True,
+                thumb=None,
+                reply_to=reply_to_id,
+                attributes=[
+                    DocumentAttributeAudio(
+                        duration=int(ytdl_data["duration"]),
+                        title=str(ytdl_data["title"]),
+                        performer=str(ytdl_data["uploader"]),
+                    )
+                ],
+                progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                    progress(
+                        d, t, v_url, c_time, "Uploading..", f"{ytdl_data['title']}.mp3"
+                    )
+                ),
+            )
+            os.remove(f"{ytdl_data['id']}.mp3")
 _help__ = """
  ➩ yt <youtube link>: uploads the song in it's best quality available
 """

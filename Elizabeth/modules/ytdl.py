@@ -71,7 +71,6 @@ async def download_video(v_url):
             "quiet": True,
             "logtostderr": False,
         }
-        song = True
 
     try:
         await v_url.edit("`Fetching data, please wait..`")

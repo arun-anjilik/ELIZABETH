@@ -40,17 +40,19 @@ except:
 
 @register(pattern="^yt (.*)")
 async def download_video(v_url):
-	url = v_url.pattern_match.group(1)
-    	if not url:
-            rmsg = await v_url.get_reply_message()
-            myString = rmsg.text
-            url = re.search("(?P<url>https?://[^\s]+)", myString).group("url")
-    	if not url:
-            await edit_or_reply(v_url, "What I am Supposed to find? Give link")
-            return
-	v_url = await edit_or_reply(v_url, "`Preparing to download...`")
-    	reply_to_id = await reply_id(v_url)
-	opts = {
+    """ For .ytdl command, download media from YouTube and many other sites. """
+    url = v_url.pattern_match.group(1)
+    if not url:
+        rmsg = await v_url.get_reply_message()
+        myString = rmsg.text
+        url = re.search("(?P<url>https?://[^\s]+)", myString).group("url")
+    if not url:
+        await edit_or_reply(v_url, "What I am Supposed to find? Give link")
+        return
+    ytype = v_url.pattern_match.group(1).lower()
+    v_url = await edit_or_reply(v_url, "`Preparing to download...`")
+    reply_to_id = await reply_id(v_url)
+    opts = {
             "format": "bestaudio",
             "addmetadata": True,
             "key": "FFmpegMetadata",
@@ -71,59 +73,72 @@ async def download_video(v_url):
         }
         video = False
         song = True
-	try:
-        	await v_url.edit("`Fetching data, please wait..`")
-        	with YoutubeDL(opts) as ytdl:
-         	   ytdl_data = ytdl.extract_info(url)
-  	except DownloadError as DE:
-     		await v_url.edit(f"`{str(DE)}`")
-      	 	return
- 	except ContentTooShortError:
-	     	await v_url.edit("`The download content was too short.`")
-        	return
-   	except GeoRestrictedError:
-        	await v_url.edit("`Video is not available from your geographic location due to geographic restrictions imposed by a website.`")
-        	return
-    	except MaxDownloadsReached:
-       		await v_url.edit("`Max-downloads limit has been reached.`")
-       		return
-    	except PostProcessingError:
-        	await v_url.edit("`There was an error during post processing.`")
-        	return
-   	except UnavailableVideoError:
-        	await v_url.edit("`Media is not available in the requested format.`")
-        	return
-    	except XAttrMetadataError as XAME:
-        	await v_url.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
-        	return
-    	except ExtractorError:
-        	await v_url.edit("`There was an error during info extraction.`")
-        	return
-    	except Exception as e:
-        	await v_url.edit(f"{str(type(e)): {str(e)}}")
-        	return
-	if song:
-            await v_url.edit(f"`Preparing to upload song:`\\n**{ytdl_data['title']}**\\nby *Alexia*")
-            await v_url.client.send_file(
-                v_url.chat_id,
-                f"{ytdl_data['id']}.mp3",
-                supports_streaming=True,
-                thumb=None,
-                reply_to=reply_to_id,
-                attributes=[
-                    DocumentAttributeAudio(
-                        duration=int(ytdl_data["duration"]),
-                        title=str(ytdl_data["title"]),
-                        performer=str(ytdl_data["uploader"]),
-                    )
-                ],
-                progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
-                    progress(
-                        d, t, v_url, c_time, "Uploading..", f"{ytdl_data['title']}.mp3"
-                    )
-                ),
-            )
-            os.remove(f"{ytdl_data['id']}.mp3")
+
+    try:
+        await v_url.edit("`Fetching data, please wait..`")
+        with YoutubeDL(opts) as ytdl:
+            ytdl_data = ytdl.extract_info(url)
+    except DownloadError as DE:
+        await v_url.edit(f"`{str(DE)}`")
+        return
+    except ContentTooShortError:
+        await v_url.edit("`The download content was too short.`")
+        return
+    except GeoRestrictedError:
+        await v_url.edit(
+            "`Video is not available from your geographic location due to geographic restrictions imposed by a website.`"
+        )
+        return
+    except MaxDownloadsReached:
+        await v_url.edit("`Max-downloads limit has been reached.`")
+        return
+    except PostProcessingError:
+        await v_url.edit("`There was an error during post processing.`")
+        return
+    except UnavailableVideoError:
+        await v_url.edit("`Media is not available in the requested format.`")
+        return
+    except XAttrMetadataError as XAME:
+        await v_url.edit(f"`{XAME.code}: {XAME.msg}\n{XAME.reason}`")
+        return
+    except ExtractorError:
+        await v_url.edit("`There was an error during info extraction.`")
+        return
+    except Exception as e:
+        await v_url.edit(f"{str(type(e)): {str(e)}}")
+        return
+    c_time = time.time()
+    catthumb = Path(f"{ytdl_data['id']}.jpg")
+    if not os.path.exists(catthumb):
+        catthumb = Path(f"{ytdl_data['id']}.webp")
+    if not os.path.exists(catthumb):
+        catthumb = None
+    if song:
+        await v_url.edit(
+            f"`Preparing to upload song:`\
+        \n**{ytdl_data['title']}**\
+        \nby *{ytdl_data['uploader']}*"
+        )
+        await v_url.client.send_file(
+            v_url.chat_id,
+            f"{ytdl_data['id']}.mp3",
+            supports_streaming=True,
+            thumb=None,
+            reply_to=reply_to_id,
+            attributes=[
+                DocumentAttributeAudio(
+                    duration=int(ytdl_data["duration"]),
+                    title=str(ytdl_data["title"]),
+                    performer=str(ytdl_data["uploader"]),
+                )
+            ],
+            progress_callback=lambda d, t: asyncio.get_event_loop().create_task(
+                progress(
+                    d, t, v_url, c_time, "Uploading..", f"{ytdl_data['title']}.mp3"
+                )
+            ),
+        )
+        os.remove(f"{ytdl_data['id']}.mp3")
 _help__ = """
  ➩ yt <youtube link>: uploads the song in it's best quality available
 """

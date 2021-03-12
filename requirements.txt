@@ -34,7 +34,7 @@ psutil
 speedtest-cli>=2.0.2
 hachoir
 googletrans
-youtube-dl
+youtube_dl
 wikipedia
 spamwatch
 bleach

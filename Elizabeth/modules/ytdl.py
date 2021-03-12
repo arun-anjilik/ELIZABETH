@@ -71,7 +71,6 @@ async def download_video(v_url):
             "quiet": True,
             "logtostderr": False,
         }
-        video = False
         song = True
 
     try:
